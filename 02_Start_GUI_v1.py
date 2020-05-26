@@ -31,7 +31,7 @@ class Start:
 
         # button frame (row 3)
         self.stakes_frame = Frame(self.start_frame)
-        self.stakes_frame.grid
+        self.stakes_frame.grid(row=3)
 
         # buttons go here
         button_font = "Arial 12 bold"
@@ -62,6 +62,41 @@ class Start:
         starting_balance = self.start_amount_entry.get()
         Game(self, stakes, starting_balance)
 
+        # set error background colours (and assume that there are no errors at first
+        error_back = "#ffafaf"
+        has_errors = "no"
+
+        # change background to white (for testing purposes)
+        self.start_amount_entry.config(bg="white")
+        self.amount_error_label.config(text="")
+
+        try:
+            starting_balance = int(starting_balance)
+
+            if starting_balance < 5:
+                has_errors = "yes"
+                error_feedback = "Sorry, the least you " \
+                                 "can play with is $5"
+            elif starting_balance > 50:
+                has_errors = "yes"
+                error_feedback = "Too high! The most you can risk in " \
+                                 "this game is $50"
+            elif starting_balance < 10 and (stakes == 2 or stakes == 3):
+                has_errors = "yes"
+                error_feedback = "Sorry, you can only afford to " \
+                                 "play a low stakes game."
+            elif starting_balance < 15 and stakes == 3:
+                has_errors = "yes"
+                error_feedback = "sorry, you can only afford to " \
+                                 "play a low or medium stakes game."
+
+        except ValueError:
+            has_errors = "yes"
+            error_feedback = "Please enter a dollar amount (no text / decimals)"
+
+        if has_errors == "yes":
+            self.start_amount_entry.config(bg=error_back)
+            elf.amount_error_label.conig(text=error_feedback)
 
 class Game:
     def __init__(self, partner, stakes, starting_balance):
