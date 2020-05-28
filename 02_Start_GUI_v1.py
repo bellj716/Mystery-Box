@@ -10,6 +10,10 @@ class Start:
         self.start_frame = Frame(padx=10, pady=10)
         self.start_frame.grid()
 
+        # Set initial balance
+        self.starting_funds = IntVar()
+        self.starting_funds.set(0)
+
         # Mystery Heading (row 0)
         self.mystery_box_label = Label(self.start_frame, text="Mystery Box Game",
                                        font="Arial 19 bold")
@@ -25,9 +29,21 @@ class Start:
                                           padx=10, pady=10)
         self.mystery_instructions.grid(row=1)
 
-        # Entry box... (row 2)
-        self.start_amount_entry = Entry(self.start_frame, font="Arial 16 bold")
-        self.start_amount_entry.grid(row=2)
+        # Entry box, Button & Error Label (row 2)
+        self.entry_error_frame = Frame(self.start_frame, width=200)
+        self.entry_error_frame.grid(row=2)
+
+        self.start_amount_entry = Entry(self.entry_error_frame, font="Arial 19 bold",
+                                        width=10)
+        self.start_amount_entry.grid(row=0, column=0)
+
+        self.add_funds_button = Button(self.entry_error_frame, font="Arial 19 bold",
+                                       text="Add Funds", command=self.check_funds)
+        self.add_funds_button.grid(row=0, column=1)
+
+        self.amount_error_label = Label(self.entry_error_frame, fg="maroon",
+                                        text="", font="Arial 10 Bold", wrap=275, justify=LEFT)
+        self.amount_error_label.grid(row=1, columnspan=2, pady=5)
 
         # button frame (row 3)
         self.stakes_frame = Frame(self.start_frame)
@@ -52,6 +68,11 @@ class Start:
                                        command=lambda: self.to_game(3),
                                        font=button_font, bg="#99FF33")
         self.lowstakes_button.grid(row=0, column=2, pady=10)
+
+        # Disable all stakes buttons at the start
+        self.lowstakes_button.config(state=DISABLED)
+        self.meduim_stakes_button.config(state=DISABLED)
+        self.high_stakes_button.config(state=DISABLED)
 
         # Help Button
         self.help_button = Button(self.start_frame, text="How to Play",
@@ -96,7 +117,13 @@ class Start:
 
         if has_errors == "yes":
             self.start_amount_entry.config(bg=error_back)
-            elf.amount_error_label.conig(text=error_feedback)
+            self.amount_error_label.conig(text=error_feedback)
+
+        else:
+            Game(self, stakes, starting_balance)
+
+            # hide start up window
+            # root.withdraw
 
 class Game:
     def __init__(self, partner, stakes, starting_balance):
