@@ -51,7 +51,7 @@ class Start:
 
         # buttons go here
         button_font = "Arial 12 bold"
-        # Play Button (row 3)
+        # Orange Low stakes button
         self.lowstakes_button = Button(self.stakes_frame, text="Low ($5)",
                                        command=lambda: self.to_game(1),
                                        font=button_font, bg="#FF9933")
@@ -78,6 +78,56 @@ class Start:
         self.help_button = Button(self.start_frame, text="How to Play",
                                   bg="#808080", fg="white", font=button_font)
         self.help_button.grid(row=4, pady=10)
+
+    def check_funds(self):
+        starting_balance = self.start_amount.get()
+
+        # set error background colours (and assume that there are no errors at first
+        error_back = "#ffafaf"
+        has_errors = "no"
+
+        # change background to white (for testing purposes)
+        self.start_amount_entry.config(bg="white")
+        self.amount_error_label.config(text="")
+
+    def check_funds(self):
+        starting_balance = self.start_amount_entry.get()
+
+        # set error background colours (and assume that there are no errors at first
+        error_back = "#ffafaf"
+        has_errors = "no"
+
+        # change background to white (for testing purposes)
+        self.start_amount_entry.config(bg="white")
+        self.amount_error_label.config(text="")
+
+        #  Disable all stakes buttons in case user changes mind and decreases amount entered
+        self.lowstakes_button.config(state=DISABLED)
+        self.meduim_stakes_button.config(state=DISABLED)
+        self.high_stakes_button.config(state=DISABLED)
+
+        try:
+            starting_balance = int(starting_balance)
+
+            if starting_balance < 5:
+                has_errors = "yes"
+                error_feedback = "Sorry, the least you " \
+                                 "can play with is $5"
+            elif starting_balance > 50:
+                has_errors = "yes"
+                error_feedback = "Too high! The most you can risk in " \
+                                 "this game is $50"
+
+            elif starting_balance >= 15:
+                # enable all buttons
+                self.lowstakes_button.config(state=NORMAL)
+                self.meduim_stakes_button.config(state=NORMAL)
+                self.high_stakes_button.config(state=NORMAL)
+            elif starting_balance >= 10:
+                # enable low and medium stakes buttons
+                self.low_stakes_button.config(state=NORMAL)
+                self.medium_stakes_button.config(state=NORMAL)
+
 
     def to_game(self, stakes):
         starting_balance = self.start_amount_entry.get()
