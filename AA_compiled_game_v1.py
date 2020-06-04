@@ -42,7 +42,7 @@ class Start:
         self.add_funds_button.grid(row=0, column=1)
 
         self.amount_error_label = Label(self.entry_error_frame, fg="maroon",
-                                        text="", font="Arial 10 Bold", wrap=275, justify=LEFT)
+                                        text="", font="Arial 10 bold", wrap=275, justify=LEFT)
         self.amount_error_label.grid(row=1, columnspan=2, pady=5)
 
         # button frame (row 3)
@@ -58,20 +58,20 @@ class Start:
         self.lowstakes_button.grid(row=0, column=0,  pady=10)
 
         #yellow medium stakes button...
-        self.lowstakes_button = Button(self.stakes_frame, text="Medium ($10)",
+        self.medium_stakes_button = Button(self.stakes_frame, text="Medium ($10)",
                                        command=lambda: self.to_game(2),
                                        font=button_font, bg="#FFFF33")
-        self.lowstakes_button.grid(row=0, column=1, padx=5, pady=10)
+        self.medium_stakes_button.grid(row=0, column=1, padx=5, pady=10)
 
         # green high stakes button...
-        self.lowstakes_button = Button(self.stakes_frame, text="High ($15)",
+        self.high_stakes_button = Button(self.stakes_frame, text="High ($15)",
                                        command=lambda: self.to_game(3),
                                        font=button_font, bg="#99FF33")
-        self.lowstakes_button.grid(row=0, column=2, pady=10)
+        self.high_stakes_button.grid(row=0, column=2, pady=10)
 
         # Disable all stakes buttons at the start
         self.lowstakes_button.config(state=DISABLED)
-        self.meduim_stakes_button.config(state=DISABLED)
+        self.medium_stakes_button.config(state=DISABLED)
         self.high_stakes_button.config(state=DISABLED)
 
         # Help Button
@@ -80,17 +80,7 @@ class Start:
         self.help_button.grid(row=4, pady=10)
 
     def check_funds(self):
-        starting_balance = self.start_amount.get()
-
-        # set error background colours (and assume that there are no errors at first
-        error_back = "#ffafaf"
-        has_errors = "no"
-
-        # change background to white (for testing purposes)
-        self.start_amount_entry.config(bg="white")
-        self.amount_error_label.config(text="")
-
-    def check_funds(self):
+        print("checking funds")
         starting_balance = self.start_amount_entry.get()
 
         # set error background colours (and assume that there are no errors at first
@@ -103,7 +93,24 @@ class Start:
 
         #  Disable all stakes buttons in case user changes mind and decreases amount entered
         self.lowstakes_button.config(state=DISABLED)
-        self.meduim_stakes_button.config(state=DISABLED)
+        self.medium_stakes_button.config(state=DISABLED)
+        self.high_stakes_button.config(state=DISABLED)
+
+    def to_game(self, stakes):
+        starting_balance = self.start_amount_entry.get()
+        Game(self, stakes, starting_balance)
+
+        # set error background colours (and assume that there are no errors at first
+        error_back = "#ffafaf"
+        has_errors = "no"
+
+        # change background to white (for testing purposes)
+        self.start_amount_entry.config(bg="white")
+        self.amount_error_label.config(text="")
+
+        #  Disable all stakes buttons in case user changes mind and decreases amount entered
+        self.lowstakes_button.config(state=DISABLED)
+        self.medium_stakes_button.config(state=DISABLED)
         self.high_stakes_button.config(state=DISABLED)
 
         try:
@@ -121,45 +128,14 @@ class Start:
             elif starting_balance >= 15:
                 # enable all buttons
                 self.lowstakes_button.config(state=NORMAL)
-                self.meduim_stakes_button.config(state=NORMAL)
+                self.medium_stakes_button.config(state=NORMAL)
                 self.high_stakes_button.config(state=NORMAL)
             elif starting_balance >= 10:
                 # enable low and medium stakes buttons
-                self.low_stakes_button.config(state=NORMAL)
+                self.lowstakes_button.config(state=NORMAL)
                 self.medium_stakes_button.config(state=NORMAL)
-
-
-    def to_game(self, stakes):
-        starting_balance = self.start_amount_entry.get()
-        Game(self, stakes, starting_balance)
-
-        # set error background colours (and assume that there are no errors at first
-        error_back = "#ffafaf"
-        has_errors = "no"
-
-        # change background to white (for testing purposes)
-        self.start_amount_entry.config(bg="white")
-        self.amount_error_label.config(text="")
-
-        try:
-            starting_balance = int(starting_balance)
-
-            if starting_balance < 5:
-                has_errors = "yes"
-                error_feedback = "Sorry, the least you " \
-                                 "can play with is $5"
-            elif starting_balance > 50:
-                has_errors = "yes"
-                error_feedback = "Too high! The most you can risk in " \
-                                 "this game is $50"
-            elif starting_balance < 10 and (stakes == 2 or stakes == 3):
-                has_errors = "yes"
-                error_feedback = "Sorry, you can only afford to " \
-                                 "play a low stakes game."
-            elif starting_balance < 15 and stakes == 3:
-                has_errors = "yes"
-                error_feedback = "sorry, you can only afford to " \
-                                 "play a low or medium stakes game."
+            else:
+                self.lowstakes_button.config(state=NORMAL)
 
         except ValueError:
             has_errors = "yes"
@@ -167,10 +143,10 @@ class Start:
 
         if has_errors == "yes":
             self.start_amount_entry.config(bg=error_back)
-            self.amount_error_label.conig(text=error_feedback)
+            self.amount_error_label.config(text=error_feedback)
 
         else:
-            Game(self, stakes, starting_balance)
+            self.starting_funds.set(starting_balance)
 
     def to_game(self, stakes):
 
@@ -179,13 +155,57 @@ class Start:
 
         Game(self, stakes, starting_balance)
 
-            # hide start up window
-            root.withdraw
+        # hide start up window
+        root.withdraw
+
 
 class Game:
     def __init__(self, partner, stakes, starting_balance):
         print(stakes)
         print(starting_balance)
+
+        # Initialize
+        self.balance = IntVar()
+
+        # set starting balance to amount entered by user at start of game
+        self.balance.set(starting_balance)
+
+        # GUI setup
+        self.game_box = Toplevel()
+        self.game_frame = Frame(self.game_box)
+        self.game_frame.grid()
+
+        # Heading row
+        self.heading_label = Label(self.game_frame, text="Heading",
+                                       font="Arial 24 bold", padx=10, pady=10)
+        self.heading_label.grid(row=0)
+
+        # Balance Label
+        self.balance_frame = Frame(self.game_frame)
+        self.balance_frame.grid(row=1)
+
+        self.balance_label = Label(self.game_frame, text="Balnace...")
+        self.balance_label.grid(row=2)
+
+        self.play_button = Button(self.game_frame, text="Gain", padx=10,
+                                  pady=10, command=self.reveal_boxes)
+        self.play_button.grid(row=3)
+
+
+    def reveal_boxes(self):
+        # retrieve the balanace from the initial
+        current_balance = self.balance.get()
+
+        # Adjust the balance (subtract game cost, add payout)
+        # for testing purposes just add 2
+        current_balance += 2
+
+        # set balance to adjusted balance
+        self.balance.set(current_balance)
+
+        # Edit label so user can see their balance
+        self.balance_label.configure(text="Balance: {}".format(current_balance))
+
 
 # main routine
 if __name__ == "__main__":
