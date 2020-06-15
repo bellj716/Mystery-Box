@@ -23,3 +23,60 @@ class Start:
 
         # hide start up window
         root.withdraw
+
+class Game:
+    def __init__(self, partner, stakes, starting_balance):
+        print(stakes)
+        print(starting_balance)
+
+        # initialise variables
+        self.balance = IntVar()
+        # set starting balance to amount entered by user at the start of game
+        self.balance.set(starting_balance)
+
+        # get value of stakes (use it as a multiplier when calculating winnings)
+        self.multiplier = IntVar()
+        self.multiplier.set(stakes)
+
+        # GUI Setup
+        self.game_box = Toplevel()
+        self.game_frame = Frame(self.game_box)
+        self.game_frame.grid()
+
+        # heading row
+        self.heading_label = Label(self.game_frame, text="Play...", font="Arial 25 bold",
+                                   padx=10, pady=10)
+        self.heading_label.grid(row=0)
+
+        # instructions label
+        self.instructions_label = Label(self.game_frame, wrap=30, justify=LEFT,
+                                        text="Press <enter> or click the 'Open "
+                                             "Boxes' button to reveal the "
+                                             "contents of the mystery boxes.",
+                                        font="Arial 10", padx=10, pady=10)
+        self.instructions_label.grid(row=1)
+
+        # boxes go here (row 2)
+        box_text = "Arial 16 bold'
+        box_back = "#b9ea96"            # light green
+        box_width = 5
+        self.box_frame = Frame(self.game_frame)
+        self.box_frame.grid(row=2, pady=10)
+
+        self.prize1_label = Label(self.box_frame, text="?\n", font=box_text,
+                                  bg=box_back, width=box_width, padx=10, pady=10)
+        self.prize1_label.grid(row=0, colum=0)
+
+        self.prize2_label = Label(self.box_frame, text="?\n", font=box_text,
+                                  bg=box_back, width=box_width, padx=10, pady=10)
+        self.prize2_label.grid(row=0, colum=1, padx=10)
+
+        self.prize3_label = Label(self.box_frame, text="?\n", font=box_text,
+                                  bg=box_back, width=box_width, padx=10, pady=10)
+        self.prize3_label.grid(row=0, colum=2)
+
+        # play button goes here (row 3)
+        self.play_button = Button(self.game_frame, text="Open Boxes",
+                                  bg="#FFFF33", font="Arial 15 bold", width=20,
+                                  padx=10, pady=10, command=self.reveal_boxes)
+        self.play_button.grid(row=3)
