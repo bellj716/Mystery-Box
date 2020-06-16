@@ -80,3 +80,59 @@ class Game:
                                   bg="#FFFF33", font="Arial 15 bold", width=20,
                                   padx=10, pady=10, command=self.reveal_boxes)
         self.play_button.grid(row=3)
+
+        # Balance Label (row 4)
+
+        start_text = "Game Cost: ${} \n" " \nHow Much " \
+                     "will you win?".format(stakes * 5)
+
+        self.balance_label = Label(self.game_frame, font="Arial 12 bold", fg="green",
+                                   text=start_text, wrap=300, justify=LEFT)
+        self.balance_label.grid(row=4, pady=10)
+
+        # Help and game stats button (row 5)
+        self.help_export_frame = Frame(self.game_frame)
+        self.help_export_frame.grid(row=5, pady=10)
+
+        self.help_button = Button(self.help_export_frame, tetx="Help / Rules",
+                                  font = "Arial 15 bold", bg="#808080", fg="white")
+        self.help_button.grid(row=0, column=1, padx=2)
+
+    def reveal_boxes(self)
+        # retrieve the balance from the initial function
+        current_balance = self.balance.get()
+        stakes_multiplier = self.multiplier.get()
+
+        round_winnings = 0
+        prizes = []
+        for item in range(0, 3):
+            prize_num = random.randint(1, 100)
+
+            if 0 < prize_num <= 5:
+                prize = "gold\n(${})".format(5* stakes_multiplier)
+                round_winnings += 5 * stakes_multiplier
+            elif 5 < prize_num <= 25:
+                prize = "silver\n(${})".format(2* stakes_multiplier)
+                round_winnings += stakes_multiplier
+            elif 25 < prize_num <= 65:
+                prize = "copper\n(${})".format(1* stakes_multiplier)
+                round_winnings += stakes_multiplier
+            else:
+                prize = "lead\n($0) "
+
+            prizes.append(prize)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
