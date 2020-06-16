@@ -122,17 +122,28 @@ class Game:
 
             prizes.append(prize)
 
+        # display prizes...
+        self.prize1_label.config(text=prizes[0])
+        self.prize2_label.config(text=prizes[1])
+        self.prize3_label.config(text=prizes[2])
+
+        # deduct cost of game
+        current_balance -= 5 * stakes_multiplier
+
+        # add winnings
+        current_balance += round_winnings
+
+        # set balance to new balance
+        self.balance.set(current_balance)
+
+        balance_statement = "Game Cost: ${}\nPayback: ${} \n" \
+                            "Current Balance: ${}".format(5 * stakes_multiplier,
+                                                          round_winnings,
+                                                          current_balance)
+
+        # edit label so user can see their balance
+        self.balance_label.configure(text=balance_statement)
 
 
-
-
-
-
-
-
-
-
-
-
-
+# main routine
 
