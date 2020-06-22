@@ -22,7 +22,7 @@ class Start:
         Game(self, stakes, starting_balance)
 
         # hide start up window
-        root.withdraw
+        self.start_frame.destroy()
 
 class Game:
     def __init__(self, partner, stakes, starting_balance):
@@ -40,6 +40,8 @@ class Game:
 
         # GUI Setup
         self.game_box = Toplevel()
+
+        self.game_box.protocol('WM_DELETE_WINDOW', self.to_quit)
         self.game_frame = Frame(self.game_box)
         self.game_frame.grid()
 
@@ -79,6 +81,12 @@ class Game:
         self.play_button = Button(self.game_frame, text="Open Boxes",
                                   bg="#FFFF33", font="Arial 15 bold", width=20,
                                   padx=10, pady=10, command=self.reveal_boxes)
+        self.play_button.grid(row=3)
+
+        # bind button to <enter> (users can push enter to reveal boxes)
+
+        self.play_button.focus()
+        self.play_button.bind('<Return>', lambda e: self.reveal_boxes())
         self.play_button.grid(row=3)
 
         # Balance Label (row 4)
