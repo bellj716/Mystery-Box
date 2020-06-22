@@ -75,11 +75,6 @@ class Start:
         self.medium_stakes_button.config(state=DISABLED)
         self.high_stakes_button.config(state=DISABLED)
 
-        # Help button
-       # self.help_button = Button(self.start_frame, text="How to Play",
-                                #  bg="#808080", fg="white", font=button_font)
-        #self.help_button.grid(row=4, pady=10)
-
     def check_funds(self):
         starting_balance = self.start_amount_entry.get()
 
@@ -222,13 +217,13 @@ class Game:
         self.help_export_frame.grid(row=5, pady=10)
 
         self.help_button = Button(self.help_export_frame, text="Help / Rules",
-                                  font="Arial 15 bold", bg="#808080", fg="white")
+                                  font="Arial 15 bold", bg="#808080", fg="white", command=self.help)
         self.help_button.grid(row=0, column=1, padx=2)
 
         self.stat_button = Button(self.help_export_frame, text="Game Stats...",
                                   font="Arial 15 bold",  bg="#223fa8", fg="white")
         self.stat_button.grid(row=0, column=2, padx=2)
-        
+
         # Quit Button
         self.quit_button = Button(self.game_frame, text="Quit", fg="white",
                                   bg="#660000", font="Arial 15 bold", width=20,
@@ -315,6 +310,61 @@ class Game:
 
     def to_quit(self):
         root.destroy()
+
+    def help(self):
+        get_help = Help(self)
+
+class Help:
+            def __init__(self, partner):
+                # disable help button
+                partner.help_button.config(state=DISABLED)
+
+                # sets up child window (ie: help box)
+                self.help_box = Toplevel()
+
+                # if user press cross instead of dismiss, close help and release help button
+                self.help_box.protocol('WM_DELETE_WINDOW', partial(self.close_help, partner))
+
+                # set up gui frame
+                self.help_frame = Frame(self.help_box, width=300)
+                self.help_frame.grid()
+
+                # set up help heading (row 0)
+                self.how_heading = Label(self.help_frame, text="Help and Instructions",
+                                         font="Arial 14 bold")
+                self.how_heading.grid(row=0)
+
+                help_text = "Choose an amount to play with and then choose the stakes. " \
+                            "higher stakes cost more per round but you can win more as " \
+                            "well. \n\n" \
+                            "When you enter the play area, you will see three mystery " \
+                            "boxes. To reveal the contents of the boxes, click the " \
+                            "'Open Boxes' button. If you don't have enough money to play, " \
+                            "the button will turn red an tou will need to quit the game. \n\n" \
+                            "the contents of the boxes will be added to you balance. " \
+                            "the boxes could contain...\n\n" \
+                            "Low: Lead ($0) | Copper ($1) | Silver ($2) | Gold ($10)\n" \
+                            "Medium: Lead ($0) | Copper ($2) | Silver ($4) | Gold ($25)\n" \
+                            "Low: Lead ($0) | Copper ($5) | Silver ($10) | Gold ($50)\n\n" \
+                            "If each box contains gold, you earn #30 (low stakes). If " \
+                            "the contained copper, silver and gold, you would recieve " \
+                            "$13 ($1 + $2 + $10) and so on."
+
+                # help text (label, row 1)
+                self.help_text = Label(self.help_frame, text=help_text,
+                                       justify=LEFT, wrap=400, padx=10, pady=10)
+                self.help_text.grid(row=1)
+
+                # dismiss button (row 2)
+                self.dismiss_btn = Button(self.help_frame, text="Dismiss", width=10,
+                                          bg="#660000", font="Arial 14 bold", fg="white",
+                                          command=partial(self.close_help, partner))
+                self.dismiss_btn.grid(row=2, pady=10)
+
+            def close_help(self, partner):
+                # put help button back to normal
+                partner.help_button.config(state=NORMAL)
+                self.help_box.destroy()
 
 # main routine
 if __name__ == "__main__":
