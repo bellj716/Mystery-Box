@@ -7,27 +7,41 @@ import random
 class Game:
     def __init__(self):
 
-        #Formating variable
+        # Formating variable
         self.game_stats_list = [50, 6]
 
         # in actual program this is blank and is populated with user calculations
-        self.round_stats_list = ["is this printing?"]
+        self.round_stats_list = [
+            'silver ($4) | silver ($4) | lead ($0) - Cost: $10 | Payback: $8 | Current Balance: $48',
+            'lead ($0) | silver ($4) | gold ($10) - Cost: $10 | Payback: $14 | Current Balance: $52',
+            'lead ($0) | lead ($0) | copper ($2) - Cost: $10 | Payback: $2 | Current Balance: $44',
+            'copper ($2) | lead ($0) | copper ($2) - Cost: $10 | Payback: $4 | Current Balance: $38',
+            'lead ($0) | lead ($0) | lead ($0) - Cost: $10 | Payback: $0 | Current Balance: $28',
+            'lead ($0) | lead ($0) | silver ($4) - Cost: $10 | Payback: $4 | Current Balance: $22',
+            'silver ($4) | silver ($4) | silver ($4) - Cost: $10 | Payback: $12 | Current Balance: $24',
+            'copper ($2) | silver ($4) | lead ($0) - Cost: $10 | Payback: $6 | Current Balance: $20',
+            'lead ($0) | lead ($0) | copper ($2) - Cost: $10 | Payback: $2 | Current Balance: $12',
+            'copper ($2) | copper ($2) | silver ($4) - Cost: $10 | Payback: $8 | Current Balance: $10',
+            'copper ($2) | silver ($4) | silver ($4) - Cost: $10 | Payback: $10 | Current Balance: $10',
+            'copper ($2) | lead ($0) | silver ($4) - Cost: $10 | Payback: $6 | Current Balance: $6']
 
         self.game_frame = Frame()
         self.game_frame.grid()
 
         # heading row
-        self.heading_label = Label(self.game_frame, text = "Play...",
+        self.heading_label = Label(self.game_frame, text="Play...",
                                    font="Arial 24 bold", padx=10, pady=10)
         self.heading_label.grid(row=0)
 
         # History Button (row 1)
-        self.stats_button = Button(self.game_frame, text="Game Stats", font="Arial 14", padx=10, pady=10,
-                                   command=lambda: self.to_stats(self.round_stats_list))
+        self.stats_button = Button(self.game_frame, text="Game Stats",
+                                   font="Arial 14", padx=10, pady=10,
+                                   command=lambda: self.to_stats(self.round_stats_list, self.game_stats_list))
         self.stats_button.grid(row=1)
 
     def to_stats(self, game_history, game_stats):
         GameStats(self, game_history, game_stats)
+
 
 class GameStats:
     def __init__(self, partner, game_history, game_stats):
@@ -41,10 +55,9 @@ class GameStats:
         content = "Arial 12"
 
         # sets up child window ie stats box
-        self.stats_box = Toplevle()
+        self.stats_box = Toplevel()
 
         # if users press cross ar top closes stats and releases stats button
-
         self.stats_box.protocol('WM_DELETE_WINDOW', partial(self.close_stats, partner))
 
         # set up GUI Frame
@@ -73,18 +86,18 @@ class GameStats:
         self.start_balance_label.grid(row=0, column=0, padx=0)
 
         self.start_balance_value_label = Label(self.details_frame, font=content,
-                                                text="${}".format(game_stats[0]),
+                                               text="${}".format(game_stats[0]),
                                                anchor="w")
         self.start_balance_value_label.grid(row=0, column=1, padx=0)
 
         # current balance
         self.current_balance_label = Label(self.details_frame, text="current Balance:", font=heading,
-                                         anchor="e")
+                                           anchor="e")
         self.current_balance_label.grid(row=1, column=0, padx=0)
 
         self.current_balance_value_label = Label(self.details_frame, font=content,
                                                  text="${}".format(game_stats[1]),
-                                               anchor="w")
+                                                 anchor="w")
         self.current_balance_value_label.grid(row=1, column=1, padx=0)
 
         if game_stats[1] > game_stats[0]:
@@ -112,8 +125,8 @@ class GameStats:
         self.games_played_label.grid(row=4, column=0, padx=0)
 
         self.games_played_value_label = Label(self.details_frame, font=content,
-                                          text=len(game_history), anchor="w")
-        self.win_loss_value_label.grid(row=4, colum=1, padx=0)
+                                              text=len(game_history), anchor="w")
+        self.games_played_value_label_value_label.grid(row=4, colum=1, padx=0)
 
         # dismiss button (row 2)
         self.dismiss_btn = Button(self.stats_frame, text="Dismiss", width=10,
@@ -130,32 +143,5 @@ class GameStats:
     if __name__ == "__main__":
         root = Tk()
         root.title("Stats Box")
-        something = Game(root)
+        something = Game()
         root.mainloop()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
